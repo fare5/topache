@@ -1,2 +1,5 @@
 gem 'em-ssh'
 gem 'apachelogregex'
+gem 'activesupport'
+gem 'configatron'
+gem 'highline'

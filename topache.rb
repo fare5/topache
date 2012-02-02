@@ -4,17 +4,17 @@ require 'configatron'
 
 configatron.set_default(:host, 'localhost' )
 configatron.set_default(:user, 'root' )
-configatron.set_default(:format, '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"' )
+configatron.set_default(:log_format, '%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"' )
 #configatron.set_default(:preformat, '')
 configatron.set_default(:file, '/var/log/apache2/access.log') #'/home/falkadi/work/pm/maintance/file-tail/ssh_em/ch_access.log'
 configatron.set_default(:command, 'tail -f -n 1')
-#configatron.set_default(:password, true)
+configatron.set_default(:password, true)
 
 opts = GetoptLong.new(
   [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
   [ '--host', '-H', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--user', '-u', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '--format', '-F', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--log_format', '-F', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--preformat', '-p', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--file', '-f', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--command', '-c', GetoptLong::REQUIRED_ARGUMENT ],
@@ -37,7 +37,7 @@ ruby topache [OPTION]
 --user name, -u name:
    username to log as. default - root 
 
---format f, -F f:
+--log_format f, -F f:
    format apache logs. default - %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" combined
 
 --preformat pf, -p pf:
@@ -56,8 +56,8 @@ ruby topache [OPTION]
       configatron.host = arg
     when '--user'
       configatron.user = arg
-    when '--format'
-      configatron.format = arg
+    when '--log_format'
+      configatron.log_format = arg
     when '--preformat'
       configatron.preformat = arg
     when '--file'
@@ -71,6 +71,7 @@ ruby topache [OPTION]
 end
 
 puts configatron.inspect
+puts configatron.log_format
 
 ( configatron.pass = ask("Enter password: ") {|q| q.echo = false} ) unless configatron.password.nil?
 

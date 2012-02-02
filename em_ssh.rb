@@ -22,9 +22,21 @@ EM.run do
 
   puts "\e[2J" #clear the screen
 
-  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(1,1) + "\e[2Khits per secound: "  + ap.avg_per_s.to_s }
-  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(2,1) + "\e[2Khits: #{ap.counter}\t secounds: #{ap.secounds}" }
-  EM.add_periodic_timer(INTERVAL+2) { puts AsciiAnsi.location(6,2) + "\e[0J" + ap.best_hiters(MAX_HITERS) }
+  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(1,1) + "\e[2Khits per second: "  + ap.avg_per_s.to_s }
+  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(2,1) + "\e[2Khits: #{ap.counter}\t seconds: #{ap.seconds}" }
+
+#  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(16,2) + "\e[0J" + ap.oh.to_s + " " + ap.oh.count.to_s } #test ordered hash to del
+  puts AsciiAnsi.location(3, 2) + "\e[0J ### >> hits per sec from last x sec <<  " 
+  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(4, 2) + "\e[0K" + ap.hits_per_sec(1) }
+  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(5, 2) + "\e[0K" + ap.hits_per_sec(6) }
+
+  puts AsciiAnsi.location(7,2) + "\e[0J ### >> best hiters from the beginning <<  \e[8;17r"
+  EM.add_periodic_timer(INTERVAL+2) { puts AsciiAnsi.location(8,2) + "#{"\n"*10}" + AsciiAnsi.location(8,2) + ap.best_hiters(MAX_HITERS) }
+#  EM.add_periodic_timer(INTERVAL+2) { puts AsciiAnsi.location(16,2) + "\e[0J" + ap.str_s1 } #first atempt to del? if ordered hash will work
+
+
+  puts AsciiAnsi.location(19,2) + "\e[0J ### >> best hiters from last x sec <<  \e[19;28r"
+  EM.add_periodic_timer(INTERVAL) { puts AsciiAnsi.location(20,2) + "\e[0J" + ap.best_hiters_per_sec(6, 4) }
   
   EM::Ssh.start(HOST, USER, :password => PASSWORD) do |ssh|
 #    ssh.exec!('uname -a').tap{|r| puts "\nuname: #{r}"}
@@ -34,7 +46,7 @@ EM.run do
         raise "could not execute command" unless success
         ch.on_data do |c, data|
           res = ap.parse data
-          $stdout.print AsciiAnsi.location(4,3) + "\e[2K" + res['%h'] + "\n" if res
+#          $stdout.print AsciiAnsi.location(4,3) + "\e[2K" + res['%h'] + "\n" if res
 #          $stdout.print "\e[2J" + (ap.parse data)['%h'] + "\n"
         end
 
