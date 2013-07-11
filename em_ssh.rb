@@ -23,8 +23,9 @@ EM.run do
   ap = ApacheParser.new
   tv = TopacheView.new(ap)
   
-  EM::Ssh.start(HOST, USER, :password => PASSWORD) do |ssh|
+  EM::Ssh.start(HOST, USER, :password => PASSWORD) do |connection|
 #    ssh.exec!('uname -a').tap{|r| puts "\nuname: #{r}"}
+  connection.callback do |ssh|
 
     channel = ssh.open_channel do |ch|
       ch.exec COMMAND do |ch, success|
@@ -50,6 +51,7 @@ EM.run do
    ssh.close
 
 #    EM.stop
+  end #connection.callback
   end #EM::Ssh.start
 
 end #EM.run do
